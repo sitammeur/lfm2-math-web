@@ -9,7 +9,7 @@ import {
  * This class uses the Singleton pattern to enable lazy-loading of the pipeline
  */
 class TextGenerationPipeline {
-  static model_id = "onnx-community/LFM2-350M-ONNX";
+  static model_id = "onnx-community/LFM2-350M-Math-ONNX";
 
   static async getInstance(progress_callback = null) {
     this.tokenizer ??= AutoTokenizer.from_pretrained(this.model_id, {
@@ -17,7 +17,7 @@ class TextGenerationPipeline {
     });
 
     this.model ??= AutoModelForCausalLM.from_pretrained(this.model_id, {
-      dtype: "q4",
+      dtype: "fp16",
       device: "webgpu",
       progress_callback,
     });
@@ -73,11 +73,12 @@ async function generate(messages) {
   const { past_key_values, sequences } = await model.generate({
     ...inputs,
     // TODO: Add when model is fixed
-    // past_key_values: past_key_values_cache,
+    past_key_values: past_key_values_cache,
 
     // Sampling
     do_sample: false,
-    temperature: 0.3,
+    temperature: 0.6,
+    top_p: 0.95,
     repetition_penalty: 1.05,
 
     max_new_tokens: 512,

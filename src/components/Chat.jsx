@@ -22,14 +22,13 @@ export default function Chat({ messages }) {
 
   return (
     <div
-      className={`flex-1 p-6 max-w-[960px] w-full ${
-        empty ? "flex flex-col items-center justify-end" : "space-y-4"
-      }`}
+      className={`flex-1 p-6 max-w-[960px] w-full ${empty ? "flex flex-col items-center justify-end" : "space-y-4"
+        }`}
     >
       {empty ? (
         <div className="text-xl">
           <span className="text-gray-500 dark:text-gray-300">
-            Hi there! How can I assist you today? 😊
+            Hi there! How can I assist you with math today? 😊
           </span>
         </div>
       ) : (

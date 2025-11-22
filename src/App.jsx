@@ -8,9 +8,9 @@ import Progress from "./components/Progress";
 const IS_WEBGPU_AVAILABLE = !!navigator.gpu;
 const STICKY_SCROLL_THRESHOLD = 120;
 const EXAMPLES = [
-  "Give me tips to improve my time management skills.",
-  "What is the difference between AI and ML?",
-  "What is the Fibonacci sequence?",
+  "What is the solution to the equation x^2 + 2x - 3 = 0?",
+  "What is the circumference of a circle with radius 5?",
+  "Test the Pythagorean theorem with a right triangle with legs 3 and 4 and hypotenuse 5.",
 ];
 
 /**
@@ -34,10 +34,10 @@ function App() {
   // Inputs and outputs
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
-  const [systemPrompt, setSystemPrompt] = useState(
-    "You are a helpful assistant."
-  );
-  const [showSystemPromptInput, setShowSystemPromptInput] = useState(false);
+  // const [systemPrompt, setSystemPrompt] = useState(
+  //   "You are a helpful assistant."
+  // );
+  // const [showSystemPromptInput, setShowSystemPromptInput] = useState(false);
   const [tps, setTps] = useState(null);
   const [numTokens, setNumTokens] = useState(null);
 
@@ -148,6 +148,16 @@ function App() {
         case "complete":
           // Generation complete: re-enable the "Generate" button
           setIsRunning(false);
+          // Reset chat history after single-turn conversation completes
+          // Give users 8 seconds to read the response before resetting
+          // Input is already disabled (messages.length > 0) to prevent new queries
+          setTimeout(() => {
+            worker.current.postMessage({ type: "reset" });
+            setMessages([]);
+            setTps(null);
+            setNumTokens(null);
+            setInput(""); // Clear input when resetting
+          }, 8000);
           break;
 
         case "error":
@@ -184,13 +194,13 @@ function App() {
     setTps(null);
 
     // Include system prompt as the first message
-    const messagesWithSystem = [
-      { role: "system", content: systemPrompt },
-      ...messages,
-    ];
+    // const messagesWithSystem = [
+    //   { role: "system", content: systemPrompt },
+    //   ...messages,
+    // ];
 
-    worker.current.postMessage({ type: "generate", data: messagesWithSystem });
-  }, [messages, isRunning, systemPrompt]);
+    worker.current.postMessage({ type: "generate", data: messages });
+  }, [messages, isRunning]);
 
   useEffect(() => {
     if (!chatContainerRef.current || !isRunning) {
@@ -210,25 +220,30 @@ function App() {
       {status === null && messages.length === 0 && (
         <div className="h-full overflow-auto scrollbar-thin flex justify-center items-center flex-col relative">
           <div className="flex flex-col items-center mb-1 max-w-[340px] text-center">
-            <h1 className="text-4xl font-bold mb-1">LFM2 Web 🤖</h1>
+            <img
+              src="lfm-logo.png"
+              width="60%"
+              height="auto"
+              className="block drop-shadow-lg bg-transparent"
+            />
+            <h1 className="text-4xl font-bold mb-1">LFM2 Math Web 🤖</h1>
             <h2 className="font-semibold">
               A LLM that runs directly in your browser. 🚀
             </h2>
           </div>
-
           <div className="flex flex-col items-center px-4">
             <p className="max-w-[514px] mb-4">
               <br />
               You are about to load{" "}
               <a
-                href="https://huggingface.co/onnx-community/LFM2-350M-ONNX"
+                href="https://huggingface.co/onnx-community/LFM2-350M-Math-ONNX"
                 target="_blank"
                 rel="noreferrer"
                 className="font-medium underline"
               >
-                LFM2-350M-ONNX
+                LFM2-350M-Math-ONNX
               </a>
-              , a 350 million parameter LLM that is optimized for inference on
+              , a 350 million parameter math-focused LLM that is optimized for inference on
               the web. Once downloaded, the model will be cached and reused when
               you revisit the page.
               <br />
@@ -257,7 +272,6 @@ function App() {
               </a>
               !
             </p>
-
             {error && (
               <div className="text-red-500 text-center mb-2">
                 <p className="mb-1">
@@ -266,7 +280,6 @@ function App() {
                 <p className="text-sm">{error}</p>
               </div>
             )}
-
             <button
               className="border px-4 py-2 rounded-lg bg-blue-400 text-white hover:bg-blue-500 disabled:bg-blue-100 disabled:cursor-not-allowed select-none"
               onClick={() => {
@@ -301,8 +314,24 @@ function App() {
           ref={chatContainerRef}
           className="overflow-y-auto scrollbar-thin w-full flex flex-col items-center h-full"
         >
+          {/* Single-turn Warning Banner */}
+          <div className="w-full max-w-[600px] p-4 mb-2">
+            <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-3">
+              <div className="flex items-start gap-2">
+                <span className="text-orange-600 dark:text-orange-400 text-lg">⚠️</span>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-orange-800 dark:text-orange-200 mb-1">
+                    This model is for single-turn usage. After assistant response, chat resets.
+                  </p>
+                  {/* <p className="text-xs text-orange-700 dark:text-orange-300">
+                    Model is for single conversation. After message sent, chat resets, starting fresh.
+                  </p> */}
+                </div>
+              </div>
+            </div>
+          </div>
           {/* System Prompt Configuration */}
-          {messages.length === 0 && (
+          {/* {messages.length === 0 && (
             <div className="w-full max-w-[600px] p-4 mb-4">
               <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
                 <div className="flex items-center justify-between mb-2">
@@ -352,8 +381,7 @@ function App() {
                 )}
               </div>
             </div>
-          )}
-
+          )} */}
           <Chat messages={messages} />
           {messages.length === 0 && (
             <div>
@@ -415,12 +443,21 @@ function App() {
           type="text"
           rows={1}
           value={input}
-          disabled={status !== "ready"}
-          title={status === "ready" ? "Model is ready" : "Model not loaded yet"}
+          disabled={status !== "ready" || isRunning || messages.length > 0}
+          title={
+            status !== "ready"
+              ? "Model not loaded yet"
+              : isRunning
+                ? "Waiting for response..."
+                : messages.length > 0
+                  ? "Single-turn conversation completed. Chat will reset automatically."
+                  : "Model is ready"
+          }
           onKeyDown={(e) => {
             if (
               input.length > 0 &&
               !isRunning &&
+              messages.length === 0 &&
               e.key === "Enter" &&
               !e.shiftKey
             ) {
@@ -434,7 +471,7 @@ function App() {
           <div className="cursor-pointer" onClick={onInterrupt}>
             <StopIcon className="h-8 w-8 p-1 rounded-md text-gray-800 dark:text-gray-100 absolute right-3 bottom-3" />
           </div>
-        ) : input.length > 0 ? (
+        ) : messages.length === 0 && input.length > 0 ? (
           <div className="cursor-pointer" onClick={() => onEnter(input)}>
             <ArrowRightIcon
               className={`h-8 w-8 p-1 bg-gray-800 dark:bg-gray-100 text-white dark:text-black rounded-md absolute right-3 bottom-3`}

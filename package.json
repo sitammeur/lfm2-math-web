@@ -1,5 +1,5 @@
 {
-  "name": "lfm2-web",
+  "name": "lfm2-math-web",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,9 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@huggingface/transformers": "^3.7.1",
-    "@vercel/analytics": "^1.5.0",
-    "@vercel/speed-insights": "^1.2.0",
+    "@huggingface/transformers": "3.7.5",
     "dompurify": "^3.2.3",
     "marked": "^15.0.4",
     "react": "19.1.1",
@@ -31,6 +29,6 @@
     "globals": "^15.12.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
-    "vite": "^6.0.1"
+    "vite": "^6.4.1"
   }
 }
