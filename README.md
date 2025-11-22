@@ -1,6 +1,6 @@
-# LFM-2 Web 🤖
+# LFM-2 Math Web 🤖
 
-This is a simple web app that demonstrates how to use the [LFM2-350M](https://huggingface.co/onnx-community/LFM2-350M-ONNX) model in the browser using [Transformers.js](https://huggingface.co/docs/transformers.js) and ONNX Runtime Web. The application allows users to chat with the LFM2-350M model and receive real-time responses.
+This is a simple web app that demonstrates how to use the [LFM2-350M-Math](https://huggingface.co/onnx-community/LFM2-350M-Math-ONNX) model in the browser using [Transformers.js](https://huggingface.co/docs/transformers.js) and ONNX Runtime Web. The application allows users to ask math questions to the LFM2-350M-Math model and receive real-time responses.
 
 ## Project Structure
 
@@ -29,7 +29,7 @@ The project is structured as follows:
     - `index.css`: Global CSS styles for the application.
     - `Chat.css`: CSS styles for the chat interface.
 
-  - `worker.js`: Transformers.js worker for running the Qwen model.
+  - `worker.js`: Transformers.js worker for running the LFM2-350M-Math model.
   - `App.jsx`: Main React component for the application.
   - `main.jsx`: Entry point for the application.
 
@@ -53,16 +53,16 @@ The project is structured as follows:
 
 To get started with this project, follow the steps below:
 
-1. Clone the repository: `git clone https://github.com/sitammeur/lfm2-web.git`
-2. Change the directory: `cd lfm2-web`
+1. Clone the repository: `git clone https://github.com/sitammeur/lfm2-math-web.git`
+2. Change the directory: `cd lfm2-math-web`
 3. Install the required dependencies: `npm install`
 4. Run the application: `npm run dev`
 
-Open your local host to view the web application in your browser at `http://localhost:5173/`. You can also access a live version of the application [here](https://qwen-web.vercel.app/), which is deployed on Vercel.
+Open your local host to view the web application in your browser at `http://localhost:5173/`. You can also access a live version of the application [here](https://huggingface.co/spaces/sitammeur/LFM2-Math-WebGPU), which is deployed on Hugging Face spaces.
 
 ## Results
 
-The application allows users to chat with LFM2-350M, a large language model, that operates within web browsers via 🤗 Transformers.js and ONNX Runtime Web.
+The application allows users to ask math questions to LFM2-350M-Math, a large language model, that operates within web browsers via 🤗 Transformers.js and ONNX Runtime Web.
 
 **Note**: To see results, please refer to the `assets` folder in the repository.
 
